@@ -73,8 +73,16 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/translate", TranslateHandler)
 
-	c := cors.Default().Handler(mux)
+	// CORS configuration with more control
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"}, // Allow all origins, replace "*" with specific origins for security
+		AllowedMethods: []string{"GET", "POST", "OPTIONS"}, // Allow specific HTTP methods
+		AllowedHeaders: []string{"Content-Type"}, // Allow specific headers
+	})
+
+	// Apply CORS middleware
+	handler := c.Handler(mux)
 
 	fmt.Println("Starting server on http://localhost:8000")
-	log.Fatal(http.ListenAndServe(":8000", c))
+	log.Fatal(http.ListenAndServe(":8000", handler))
 }
