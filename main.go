@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/bregydoc/gtranslate"
-	"github.com/rs/cors"
 )
 
 type TranslateRequest struct {
@@ -73,16 +72,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/translate", TranslateHandler)
 
-	// CORS configuration with more control
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"}, // Allow all origins, replace "*" with specific origins for security
-		AllowedMethods: []string{"GET", "POST", "OPTIONS"}, // Allow specific HTTP methods
-		AllowedHeaders: []string{"Content-Type"}, // Allow specific headers
-	})
-
-	// Apply CORS middleware
-	handler := c.Handler(mux)
-
+	// Start the server without CORS middleware
 	fmt.Println("Starting server on http://localhost:8000")
-	log.Fatal(http.ListenAndServe(":8000", handler))
+	log.Fatal(http.ListenAndServe(":8000", mux))
 }
